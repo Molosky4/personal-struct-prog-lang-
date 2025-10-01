@@ -51,6 +51,50 @@ def test_parse_factor():
     ast, tokens = parse_factor(tokens)
     assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 3}}
 
+# 1. Nested parentheses
+    tokens = tokenize("((5))")
+    ast, tokens = parse_factor(tokens)
+    assert ast == {'tag': 'number', 'value': 5}
+
+    # 2. Parentheses with multiplication
+    tokens = tokenize("(4*6)")
+    ast, tokens = parse_factor(tokens)
+    assert ast == {
+        'tag': '*',
+        'left': {'tag': 'number', 'value': 4},
+        'right': {'tag': 'number', 'value': 6}
+    }
+
+    # 3. Parentheses with division
+    tokens = tokenize("(10/2)")
+    ast, tokens = parse_factor(tokens)
+    assert ast == {
+        'tag': '/',
+        'left': {'tag': 'number', 'value': 10},
+        'right': {'tag': 'number', 'value': 2}
+    }
+
+    # 4. Mixed operator inside parentheses
+    tokens = tokenize("(1+2*3)")
+    ast, tokens = parse_factor(tokens)
+    # Should be parsed as 1 + (2*3) because of precedence
+    assert ast['tag'] == '+'
+    assert ast['left'] == {'tag': 'number', 'value': 1}
+    assert ast['right']['tag'] == '*'
+
+    # 5. Larger nested expression
+    tokens = tokenize("((2+3)*(4-1))")
+    ast, tokens = parse_factor(tokens)
+    assert ast['tag'] == '*'
+    assert ast['left']['tag'] == '+'
+    assert ast['right']['tag'] == '-'
+
+    # 6. Parentheses around a single negative number (edge case if tokenizer supports it)
+    tokens = tokenize("(-7)")
+    ast, tokens = parse_factor(tokens)
+    assert ast == {'tag': 'number', 'value': -7}
+
+
 def parse_term(tokens):
     """
     term = factor { "*"|"/" factor }
@@ -80,6 +124,57 @@ def test_parse_term():
     ast, tokens = parse_term(tokens)
     assert ast == {'tag': '/', 'left': {'tag': '*', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 4}}, 'right': {'tag': 'number', 'value': 6}}
 
+# 1. Single division
+    tokens = tokenize("8/2")
+    ast, tokens = parse_term(tokens)
+    assert ast == {
+        'tag': '/',
+        'left': {'tag': 'number', 'value': 8},
+        'right': {'tag': 'number', 'value': 2}
+    }
+
+    # 2. Multiple multiplications
+    tokens = tokenize("2*3*4")
+    ast, tokens = parse_term(tokens)
+    assert ast == {
+        'tag': '*',
+        'left': {
+            'tag': '*',
+            'left': {'tag': 'number', 'value': 2},
+            'right': {'tag': 'number', 'value': 3}
+        },
+        'right': {'tag': 'number', 'value': 4}
+    }
+
+    # 3. Multiplication followed by division
+    tokens = tokenize("10*2/5")
+    ast, tokens = parse_term(tokens)
+    assert ast['tag'] == '/'
+    assert ast['left']['tag'] == '*'
+
+    # 4. Parentheses affecting factor
+    tokens = tokenize("(2*3)")
+    ast, tokens = parse_term(tokens)
+    assert ast == {
+        'tag': '*',
+        'left': {'tag': 'number', 'value': 2},
+        'right': {'tag': 'number', 'value': 3}
+    }
+
+    # 5. Multiplication with parentheses as factor
+    tokens = tokenize("6*(2+1)")
+    ast, tokens = parse_term(tokens)
+    assert ast == {
+        'tag': '*',
+        'left': {'tag': 'number', 'value': 6},
+        'right': {
+            'tag': '+',
+            'left': {'tag': 'number', 'value': 2},
+            'right': {'tag': 'number', 'value': 1}
+        }
+    }
+
+    
 def parse_expression(tokens):
     """
     expression = term { "+"|"-" term }
