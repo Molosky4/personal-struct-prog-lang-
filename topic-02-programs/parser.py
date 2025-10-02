@@ -124,7 +124,7 @@ def test_parse_term():
     ast, tokens = parse_term(tokens)
     assert ast == {'tag': '/', 'left': {'tag': '*', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 4}}, 'right': {'tag': 'number', 'value': 6}}
 
-# 1. Single division
+    # 1. Single division
     tokens = tokenize("8/2")
     ast, tokens = parse_term(tokens)
     assert ast == {
