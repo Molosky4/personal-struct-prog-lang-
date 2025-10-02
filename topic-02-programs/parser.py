@@ -29,7 +29,7 @@ def parse_factor(tokens):
         ast, tokens = parse_expression(tokens[1:])
         assert tokens[0]["tag"] == ")"
         return ast, tokens[1:]
-    raise Exception(f"Unexpected token '{token['tag']}' at position {token['position']}.")
+    raise Exception(f"Unexpected token '{token['tag']}' at position {token['position']}.")  
 
 def test_parse_factor():
     """
@@ -51,7 +51,7 @@ def test_parse_factor():
     ast, tokens = parse_factor(tokens)
     assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 3}}
 
-# 1. Nested parentheses
+    # 1. Nested parentheses
     tokens = tokenize("((5))")
     ast, tokens = parse_factor(tokens)
     assert ast == {'tag': 'number', 'value': 5}
