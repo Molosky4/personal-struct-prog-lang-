@@ -19,5 +19,7 @@ x = 0;
 while (x < 14) {
     x = x + 1
 };
-print x
+print x;
+print "Hello!";
+print "My dog is " + "Dorothy"
 
