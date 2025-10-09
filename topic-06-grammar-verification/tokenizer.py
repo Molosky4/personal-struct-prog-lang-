@@ -2,6 +2,8 @@ import re
 
 # Define patterns for tokens
 patterns = [
+    [r'mfoluso',"mfoluso"],
+    [r'TRUE',"boolean"],
     [r"print","print"],
     [r"if","if"],
     [r"else","else"],
@@ -130,9 +132,10 @@ def test_whitespace():
 def test_keywords():
     print("test keywords...")
     for keyword in [
-        "print","if","else","while","continue","break","return","assert"
+        "print","if","else","while","continue","break","return","assert",'mfoluso'
     ]:
         t = tokenize(keyword)
+        print(t)
         assert len(t) == 2
         assert t[0]["tag"] == keyword, f"expected {keyword}, got {t[0]}"
         assert "value" not in t

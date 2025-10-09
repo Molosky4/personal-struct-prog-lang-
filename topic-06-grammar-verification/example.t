@@ -21,5 +21,12 @@ while (x < 14) {
 };
 print x;
 print "Hello!";
-print "My dog is " + "Dorothy"
+print "My dog is " + "Dorothy";
+
+homework = TRUE;
+if (homework==TRUE) {
+   mfoluso;
+   print _kentid_
+}
+
 

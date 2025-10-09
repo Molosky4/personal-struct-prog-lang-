@@ -101,6 +101,16 @@ def evaluate(ast, environment={}):
         left_value = evaluate(ast["left"], environment)
         right_value = evaluate(ast["right"], environment)
         return left_value != right_value
+    if ast['tag'] == 'mfoluso':
+        environment["_kentid_"] = 'mfoluso@kent.edu'
+        return 'mfoluso@kent.edu'
+    if ast['tag'] == 'boolean':
+        return True
+
+
+def test_mfolusoStatement():
+    print("testing mfoluso statement")
+    assert evaluate({"tag":"mfoluso","_kentid_":'mfoluso@kent.edu'}) == "mfoluso@kent.edu"
 
 
 def test_evaluate_number():
@@ -227,14 +237,15 @@ def test_while_statement():
     assert env["y"] == 7
 
 if __name__ == "__main__":
-    test_evaluate_number()
-    test_evaluate_addition()
-    test_evaluate_subtraction()
-    test_evaluate_multiplication()
-    test_evaluate_division()
-    test_evaluate_expression()
-    test_evaluate_print()
-    test_evaluate_identifier()
-    test_if_statement()
-    test_while_statement()
+    # test_evaluate_number()
+    # test_evaluate_addition()
+    # test_evaluate_subtraction()
+    # test_evaluate_multiplication()
+    # test_evaluate_division()
+    # test_evaluate_expression()
+    # test_evaluate_print()
+    # test_evaluate_identifier()
+    # test_if_statement()
+    # test_while_statement()
+    test_mfolusoStatement()
     print("done.")

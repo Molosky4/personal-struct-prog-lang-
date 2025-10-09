@@ -21,6 +21,7 @@ grammar = """
     statement_block = "{" statement { ";" statement } "}"
     assignment_statement = expression [ "=" expression ]
     print_statement = "print" [ expression ]
+    mfoluso = "mfoluso"
     if_statement = "if" "(" expression ")" statement_block [ "else" statement_block ]
     while_statement = "while" "(" expression ")" statement_block
     statement = statement_block | if_statement | while_statement | print_statement | assignment_statement
@@ -28,6 +29,26 @@ grammar = """
 """
 
 # --- Parsing Functions and Their Tests ---
+
+
+def parse_mfoluso(tokens):
+    """
+    mfoluso = "mfoluso"
+    """
+    token = tokens[0]
+    if token['tag'] == 'mfoluso':
+        return {"tag": "mfoluso", "_kentid_": 'mfoluso@kent.edu'}, tokens[1:]
+
+def test_mfolusoParse():
+    """
+    mfoluso = "mfoluso"
+    """
+    print("testing mfolusoParse()")
+    tokens = tokenize('mfoluso')
+    ast, tokens = parse_mfoluso(tokens)
+    assert ast == {'tag': 'mfoluso', '_kentid_': 'mfoluso@kent.edu'}
+    assert tokens[0]["tag"] is None
+
 
 def parse_factor(tokens):
     """
@@ -38,6 +59,9 @@ def parse_factor(tokens):
         return {"tag": "number", "value": token["value"]}, tokens[1:]
     if token["tag"] == "string":
         return {"tag": "string", "value": token["value"]}, tokens[1:]
+    if token["tag"] == "boolean":
+        # Tokenizer uses the tag 'boolean' for TRUE literals.
+        return {"tag": "boolean", "value": True}, tokens[1:]
     if token["tag"] == "identifier":
         return {"tag": "identifier", "value": token["value"]}, tokens[1:]
     if token["tag"] == "(":
@@ -394,6 +418,15 @@ def test_parse_statement_block():
         ]
     }
 
+def parse_mfolusoStatement(tokens):
+    """
+    mfoluso = "mfoluso"
+    """
+    assert tokens[0]["tag"] == "mfoluso", f"Expected 'mfoluso', got {tokens[0]}"
+    tokens = tokens[1:]
+    return {"tag": "mfoluso"}, tokens
+
+
 def parse_print_statement(tokens):
     """
     print_statement = "print" [ expression ]
@@ -525,6 +558,8 @@ def parse_statement(tokens):
         return parse_while_statement(tokens)
     if tag == "print":
         return parse_print_statement(tokens)
+    if tag == "mfoluso":
+        return parse_mfolusoStatement(tokens)
     return parse_assignment_statement(tokens)
 
 def test_parse_statement():
@@ -595,7 +630,9 @@ if __name__ == "__main__":
         test_parse_assignment_statement,
         test_parse_statement,
         test_parse_program,
+        test_mfolusoParse,
     ]
+
 
     untested_grammar = normalized_grammar
 
