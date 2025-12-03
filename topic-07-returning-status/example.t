@@ -36,15 +36,15 @@ print x;
 
 y = 0;
 x = 0;
-while (x < 10) {
+                                 while (x < 10) {
     x = x + 1;
     if (x > 8) {
-        continue
+        continue;
     };
     y = y + 1
 };
 print("Should see 8");
 print y;
 
-assert true, "this should not appear"
-assert false, "this should appear"
+assert true, "this should not appear";
+assert false, "this should appear";
