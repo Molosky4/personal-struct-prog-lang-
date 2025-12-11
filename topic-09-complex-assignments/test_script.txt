@@ -1,0 +1,4 @@
+counter = 0;
+counter = counter + 10;
+other_var = 99;
+counter = 20;
